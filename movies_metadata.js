@@ -1,4 +1,4 @@
-[
+export const movieData = [
     {
         "genres": [
             { "id": 28, "name": "Action" },

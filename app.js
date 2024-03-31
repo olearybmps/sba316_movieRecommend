@@ -1,12 +1,15 @@
-const userForm = document.getElementById('userForm');
-const movieContainer = document.getElementById('movieContainer');
-const greeting = document.getElementById('greeting');
-const startBtn = document.getElementById('startBtn');
-const nameInput = document.getElementById('name');
+import { movieData } from './movies_metadata.js';
+
+const userForm = document.getElementById("userForm");
+const movieContainer = document.getElementById("movieContainer");
+const greeting = document.getElementById("greeting");
+const startBtn = document.getElementById("startBtn");
+const nameInput = document.getElementById("name");
 const userNameInput = document.getElementById("userName");
 const emailInput = document.getElementById("email");
 const movieImage = document.getElementById("movieImage");
 const preferenceButtons = document.querySelectorAll(".preferenceButton");
+const recommendedMovies = document.getElementById("recommendedMovies");
 
 const moviePicks = [
     {
@@ -75,7 +78,9 @@ function validateAndStartRecommendation() {
             greeting.textContent = `Hello, ${name}! Let's find a movie for you.`;
             showNextMovie();
         } else {
-            alert("Username can only contain letters and numbers. Please remove any punctuation or special characters.");
+            alert(
+                "Username can only contain letters and numbers. Please remove any punctuation or special characters."
+            );
         }
     } else {
         alert("Please fill in all the required fields.");
@@ -94,7 +99,7 @@ preferenceButtons.forEach((button) => {
         const genre = moviePicks[userPreferences.length].genres;
         const points = parseInt(button.dataset.points);
         userPreferences.push({ genre, points });
-        console.log(userPreferences);
+        //console.log(userPreferences);
 
         if (userPreferences.length === moviePicks.length) {
             movieContainer.classList.add("hidden");
@@ -108,4 +113,53 @@ preferenceButtons.forEach((button) => {
 function showNextMovie() {
     const currentMovie = moviePicks[userPreferences.length];
     movieImage.src = currentMovie.img;
+}
+
+function recommendMovies() {
+    const genrePoints = {};
+  
+    userPreferences.forEach((preference) => {
+      preference.genre.forEach((genre) => {
+        genrePoints[genre] = (genrePoints[genre] || 0) + preference.points;
+      });
+    });
+
+    //console.log(genrePoints);
+  
+    let topGenre1 = "";
+    let topGenre2 = "";
+    let maxPoints1 = 0;
+    let maxPoints2 = 0;
+  
+    for (const genre in genrePoints) {
+      if (genrePoints[genre] > maxPoints1) {
+        maxPoints2 = maxPoints1;
+        topGenre2 = topGenre1;
+        maxPoints1 = genrePoints[genre];
+        topGenre1 = genre;
+      } else if (genrePoints[genre] > maxPoints2) {
+        maxPoints2 = genrePoints[genre];
+        topGenre2 = genre;
+      }
+    }
+
+    //console.log(`${topGenre1} ${topGenre2} ${maxPoints1} ${maxPoints2}`);
+  
+    //movieData array includes only movies having at least one genre matching either 
+    //topGenre1 or topGenre2. Then takes first 12 movies from the filtered array 
+    //and assign them to recommendedMoviesList.
+    const recommendedMoviesList = movieData
+      .filter((movie) =>
+        movie.genres.some(
+          (genre) => genre.name === topGenre1 || genre.name === topGenre2
+        )
+      )
+      .slice(0, 12);
+
+    console.log(recommendedMoviesList);
+  
+    recommendedMovies.classList.remove("hidden");
+    recommendedMovies.innerHTML = "<h3>Here are your recommended movies:</h3>";
+
+
 }
