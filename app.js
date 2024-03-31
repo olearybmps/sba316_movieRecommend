@@ -131,7 +131,7 @@ function showNextMovie() {
     movieImage.src = currentMovie.img;
 }
 
-function recommendMovies() {
+function recommendMovies(newRecommendation = false) {
     const genrePoints = {};
 
     userPreferences.forEach((preference) => {
@@ -175,7 +175,9 @@ function recommendMovies() {
     console.log(recommendedMoviesList);
 
     recommendedMovies.classList.remove("hidden");
-    recommendedMovies.innerHTML = "<h3>Here are your recommended movies:</h3>";
+    recommendedMovies.innerHTML = newRecommendation
+        ? "<h3>Here are your new recommended movies:</h3>"
+        : `<h3>Here are your recommended movies ${storedName}:</h3>`;
 
     // Use the DocumentFragment interface or HTML templating with the cloneNode method
     // to create templated content.
@@ -191,24 +193,22 @@ function recommendMovies() {
         <h4></h4>
         <p></p>
         <p>Release Date: </p>
-        <p>Runtime:  minutes</p>
+        <p>Runtime(minutes) :  </p>
         <p>Genres: </p>
       </div>
     `;
 
     recommendedMoviesList.forEach((movie) => {
         const movieCard = movieCardTemplate.content.cloneNode(true);
-        movieCard.querySelector(
-            "img"
-        ).src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+        movieCard.querySelector("img").src = movie.poster_path;
         movieCard.querySelector("img").alt = movie.original_title;
         movieCard.querySelector("h4").textContent = movie.original_title;
         movieCard.querySelectorAll("p")[0].textContent = movie.overview;
         movieCard.querySelectorAll("p")[1].textContent += movie.release_date;
         movieCard.querySelectorAll("p")[2].textContent += movie.runtime;
         movieCard.querySelectorAll("p")[3].textContent += movie.genres
-            .map((genre) => genre.name)
-            .join(", ");
+          .map((genre) => genre.name)
+          .join(", ");
         fragment.appendChild(movieCard);
 
         // Use the parent-child-sibling relationship to navigate between elements at least once (movie card)
@@ -224,6 +224,41 @@ function recommendMovies() {
     // Use appendChild and/or prepend to add new elements to the DOM
     // Append document fragment to recommendedMovies container
     recommendedMovies.appendChild(fragment);
+
+    // Create Try Again button
+    const tryAgainButton = document.createElement("button");
+    tryAgainButton.textContent = "Try Again";
+    tryAgainButton.addEventListener("click", resetRecommender);
+    recommendedMovies.appendChild(tryAgainButton);
+
+    // Create "New Recommendations" button
+    const newRecommendationsButton = document.createElement("button");
+    newRecommendationsButton.textContent = "New Recommendations";
+    newRecommendationsButton.addEventListener("click", getNewRecommendations);
+    recommendedMovies.appendChild(newRecommendationsButton);
+}
+
+function getNewRecommendations() {
+    recommendedMovies.innerHTML = "<h3>Here are your new recommended movies:</h3>";
+  
+    // Clear user preferences get new movie preferences
+    userPreferences = [];
+    movieContainer.classList.remove("hidden");
+    showNextMovie();
+  }
+
+function resetRecommender() {
+    // Clear user preferences and reset
+    userPreferences = [];
+    movieContainer.classList.add("hidden");
+    recommendedMovies.classList.add("hidden");
+    recommendedMovies.innerHTML = "";
+
+    // Show user form
+    userForm.classList.remove("hidden");
+    nameInput.value = "";
+    userNameInput.value = "";
+    emailInput.value = "";
 }
 
 // Extension of: Use at least two Browser Object Model (BOM) properties or methods
