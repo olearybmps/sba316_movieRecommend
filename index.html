@@ -1,29 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Movie Recommender</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <div id="userForm">
-      <label for="name">Name:</label>
-      <input type="text" id="name" name="name" /><br /><br />
-      <label for="email">Email:</label>
-      <input type="email" id="email" name="email" /><br /><br />
-      <button id="startBtn">Start</button>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Movie Recommender</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="titleContainer">
+    <h1 class="title">Movie Recommender</h1>
+  </div>
+  <div id="userForm">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" required/><br /><br />
+    <label for="userName">Username: (letters and numbers only, no punctuation or special characters)</label>
+    <input type="text" id="userName" name="userName" pattern="^[A-Za-z0-9]+$" required/><br><br>
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" /><br /><br />
+    <button id="startBtn">Start</button>
+  </div>
+  <div id="movieContainer" class="hidden">
+    <h3 id="greeting"></h3>
+    <img src="" id="movieImage" alt="Movie Image" />
+    <div id="movieButtons">
+      <button class="preferenceButton" data-choice="great">Great</button>
+      <button class="preferenceButton" data-choice="good">Good</button>
+      <button class="preferenceButton" data-choice="ok">OK</button>
+      <button class="preferenceButton" data-choice="terrible">Terrible</button>
     </div>
-    <div id="movieContainer" class="hidden">
-      <h3 id="greeting"></h3>
-      <img src="" id="movieImage" alt="Movie Image" />
-      <div id="movieButtons">
-        <button class="preferenceButton" data-choice="great">Great</button>
-        <button class="preferenceButton" data-choice="good">Good</button>
-        <button class="preferenceButton" data-choice="ok">OK</button>
-        <button class="preferenceButton" data-choice="terrible">Terrible</button>
-      </div>
-    </div>
-    <script src="app.js" async defer></script>
-  </body>
+  </div>
+  <script src="app.js" async defer></script>
+</body>
 </html>
